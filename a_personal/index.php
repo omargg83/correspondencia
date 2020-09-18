@@ -13,14 +13,6 @@
 
 			if($db->nivel_personal==0 or $db->nivel_personal==11 or $db->nivel_personal==1 or $db->nivel_personal==2 or $db->nivel_personal==3 or $db->nivel_personal==4 or $db->nivel_personal==10){
 				echo"<li class='nav-item active'><a class='nav-link barranav izq' title='Nuevo' id='new_personal' data-lugar='a_personal/editar'><i class='fas fa-plus'></i><span>Nuevo</span></a></li>";
-				echo "<li class='nav-item active'><a class='nav-link barranav' title='Mostrar todo' id='lista_validar' data-lugar='a_personal/validar'><i class='fas fa-check-double'></i><span>Validar</span></a></li>";
-				echo "<li class='nav-item active'><a class='nav-link barranav' title='Imprimir' id='lista_imprime' data-lugar='a_personal/imprimir_pre'><i class='fas fa-print'></i><span>Imprimir</span></a></li>";
-			}
-
-			if($db->nivel_personal==0){
-				echo"<li class='nav-item active'><a class='nav-link barranav' title='Nuevo' id='new_cargo' data-lugar='a_personal/lista_cargos'><i class='fas fa-briefcase'></i><span>Cargo</span></a></li>";
-				echo"<li class='nav-item active'><a class='nav-link barranav' title='Nuevo' id='lista_permisos' data-lugar='a_personal/lista_permisos'><i class='fas fa-key'></i><span>Permisos</span></a></li>";
-
 			}
 			echo "</ul>";
 

@@ -3,12 +3,7 @@
 	if (isset($_REQUEST['function'])){$function=$_REQUEST['function'];}	else{ $function="";}
 	if (isset($_REQUEST['ctrl'])){$ctrl=$_REQUEST['ctrl'];}	else{ $ctrl="";}
 
-	error_reporting(E_ALL);
-	ini_set('display_errors', '1');
-	date_default_timezone_set("America/Mexico_City");
-
-	//header("Location: /salud/");
-
+	require_once("init.php");
 	class Salud{
 		public $nivel_personal;
 		public $nivel_captura;
@@ -22,14 +17,8 @@
 			$this->Salud = array();
 			date_default_timezone_set("America/Mexico_City");
 
-			$_SESSION['mysqluser']="saludpublica";
-			$_SESSION['mysqlpass']="saludp123$";
-			$_SESSION['bdd']="salud";
-			/*
-				$_SESSION['servidor'] ="localhost";
-			*/
-			$_SESSION['servidor'] ="172.16.0.20";
-			$this->dbh = new PDO("mysql:host=".$_SESSION['servidor'].";dbname=".$_SESSION['bdd']."", $_SESSION['mysqluser'], $_SESSION['mysqlpass']);
+			$this->dbh = new PDO("mysql:host=".SERVIDOR.";dbname=".BDD, MYSQLUSER, MYSQLPASS);
+			$this->dbh->query("SET NAMES 'utf8'");
 			self::set_names();
 			if (isset($_SESSION['idpersona'])){
 				$sql="select * from personal_permiso where idpersona='".$_SESSION['idpersona']."'";

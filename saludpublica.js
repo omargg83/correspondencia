@@ -7,60 +7,9 @@
 
 	$(function(){
 		$("#cargando").removeClass("is-active");
-		acceso();
+		loadContent(location.hash.slice(1));
 	});
-	function acceso(){
-		$.ajax({
-			data:  {
-				"ctrl":"control",
-				"function":"login"
-			},
-			url:   'control_db.php',
-			type:  'post',
-			timeout:30000,
-			success:  function (response) {
-				var datos = JSON.parse(response);
-				if (datos.sess=="cerrada"){
-					$("#header").html("");
-					$("#side_nav").html("");
-					$("#contenido").html("");
-					$("#modal_dispo").removeClass("modal-lg");
-					$("#modal_form").load("dash/login.php");
-					$('#myModal').modal({backdrop: 'static', keyboard: false})
-					$('#myModal').modal('show');
-				}
-				if (datos.sess=="abierta"){
-					$("#cargando").addClass("is-active");
-					$("#modal_dispo").addClass("modal-lg");
-					if(datos.fondo.length>0){
-						$("body").css("background-image","url('"+datos.fondo+"')");
-					}
-					else{
-						$("body").css("background-image","url('fondo/ssh.jpg')");
-					}
-					$("#side_nav").load("dash/side.php");
-					$("#header").load("dash/menu.php");
-					$("#bodyx").html(datos.cuerpo);
-					setTimeout(fondos, 2000);
-					setTimeout(chat_inicia, 3000);
-					setTimeout(correo, 6000);
-					if (datos.admin=="1"){
-						if(notif==""){
-							notif=window.setInterval("notificarx()",30000);
-						}
-					}
-					notifyMe();
-					loadContent(location.hash.slice(1));
-					$("#cargando").removeClass("is-active");
-				}
-			},
-			error: function(jqXHR, textStatus, errorThrown) {
-				if(textStatus==="timeout") {
-					$("#bodyx").html("<div class='container' style='background-color:white; width:300px'><center><img src='img/giphy.gif' width='300px'></center></div><br><center><div class='alert alert-danger' role='alert'>Ocurrio un error intente de nuevo en unos minutos, vuelva a entrar o presione ctrl + F5, para reintentar</div></center> ");
-				}
-			}
-		});
-	}
+
 	$(window).on('hashchange',function(){
 		loadContent(location.hash.slice(1));
 	});
@@ -306,56 +255,11 @@
 			url:   'control_db.php',
 			type:  'post',
 			success:  function (response) {
-				acceso();
+				location.href="login";
 			}
 		});
 	}
-	$(document).on('submit','#acceso',function(e){
-		e.preventDefault();
-		var tipo=1;
-		var userAcceso=document.getElementById("userAcceso").value;
-		var passAcceso=$.md5(document.getElementById("passAcceso").value);
-/*
-		var btn=$(this).find(':submit');
-		$(btn).attr('disabled', 'disabled');
-		var tmp=$(btn).children("i").attr('class');
-		$(btn).children("i").removeClass();
-		$(btn).children("i").addClass("fas fa-spinner fa-pulse");
-*/
-		$.ajax({
-		  url: "control_db.php",
-			type: "POST",
-		  data: {
-				"tipo":tipo,
-				"ctrl":"control",
-				"function":"acceso",
-				"userAcceso":userAcceso,
-				"passAcceso":passAcceso
-		  },
-		  success: function( response ) {
-				var data = JSON.parse(response);
-				if (data.acceso==1){
-					acceso();
 
-					$('#myModal').modal('hide');
-					$("#modal_dispo").addClass("modal-lg");
-				}
-				else{
-					Swal.fire({
-						  type: 'error',
-						  title: 'Usuario o contraseña incorrecta',
-						  showConfirmButton: false,
-						  timer: 1000
-					})
-				}
-		  }
-		});
-		/*
-		$(btn).children("i").removeClass();
-		$(btn).children("i").addClass(tmp);
-		$(btn).prop('disabled', false);
-		*/
-	});
 	//////////////////////subir archivos
 	$(document).on("click","[id^='fileup_']",function(e){
 		e.preventDefault();
@@ -955,37 +859,3 @@
 				}
 		});
 	});
-
-
-
-
-	var html5_audiotypes={
-		"mp3": "audio/mpeg",
-		"mp4": "audio/mp4",
-		"ogg": "audio/ogg",
-		"wav": "audio/wav"
-	}
-	function createsoundbite(sound){
-		var html5audio=document.createElement('audio')
-		if (html5audio.canPlayType){ //Comprobar soporte para audio HTML5
-			for (var i=0; i<arguments.length; i++){
-				var sourceel=document.createElement('source')
-				sourceel.setAttribute('src', arguments[i])
-				if (arguments[i].match(/.(w+)$/i))
-				sourceel.setAttribute('type', html5_audiotypes[RegExp.$1])
-				html5audio.appendChild(sourceel)
-			}
-			html5audio.load()
-			html5audio.playclip=function(){
-				html5audio.pause()
-				html5audio.currentTime=0
-				html5audio.play()
-			}
-			return html5audio
-		}
-		else{
-		return {playclip:function(){throw new Error('Su navegador no soporta audio HTML5')}}
-		}
-	}
-	var hover2 = createsoundbite('chat/newmsg.mp3');
-	var hover3 = createsoundbite('chat/010762485_prev.mp3');

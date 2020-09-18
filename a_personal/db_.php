@@ -35,7 +35,7 @@ class Personal extends Salud{
 			if ($this->nivel_personal==0 or $_SESSION['administrador']==1){
 				if(strlen($valor)>0){ $filtro=" where ".$filtro;}
 				else{ $filtro="where personal.idarea=".$_SESSION['idarea'];}
-				$sql="SELECT personal.idpersona,nombre,personal.idarea,area.titulo,area.area,personal.estudio,personal_orga.orden, personal_orga.cargo, personal.file_foto FROM personal left outer join area on area.idarea=personal.idarea left outer join personal_orga on personal_orga.id=personal.idcargo $filtro order by area.orden,personal_orga.orden,personal.idpersona";
+				$sql="SELECT personal.idpersona,nombre,personal.idarea,area.area,personal.estudio,personal_orga.orden, personal_orga.cargo, personal.file_foto FROM personal left outer join area on area.idarea=personal.idarea left outer join personal_orga on personal_orga.id=personal.idcargo $filtro order by area.orden,personal_orga.orden,personal.idpersona";
 			}
 			else if ( $this->nivel_personal==3 or $this->nivel_personal==2){
 				$listaar="";
@@ -44,17 +44,16 @@ class Personal extends Salud{
 					$listaar.=$res['idarea'].",";
 				}
 				$listaar=substr($listaar,0,strlen($listaar)-1);
-				$sql="SELECT personal.idpersona,nombre,personal.idarea,area.titulo,area.area,personal.estudio,personal_orga.orden, personal_orga.cargo, personal.file_foto FROM personal left outer join area on area.idarea=personal.idarea left outer join personal_orga on personal_orga.id=personal.idcargo where personal.idarea in($listaar) $filtro and area.idarea<100 order by personal.idarea,personal_orga.orden,personal.idpersona";
+				$sql="SELECT personal.idpersona,nombre,personal.idarea,area.area,personal.estudio,personal_orga.orden, personal_orga.cargo, personal.file_foto FROM personal left outer join area on area.idarea=personal.idarea left outer join personal_orga on personal_orga.id=personal.idcargo where personal.idarea in($listaar) $filtro and area.idarea<100 order by personal.idarea,personal_orga.orden,personal.idpersona";
 			}
 			else if($this->nivel_personal==4 or $this->nivel_personal==10 or $this->nivel_personal==3){
 				if(strlen($valor)>0){ $filtro=" where area.idcentro='".$_SESSION['idcentro']."' and ".$filtro;}
 				else{ $filtro=" where area.idarea='".$_SESSION['idarea']."'"; }
-				$sql="SELECT personal.idpersona,nombre,personal.idarea,area.titulo,area.area,personal.estudio,personal_orga.orden, personal_orga.cargo, personal.file_foto FROM personal left outer join area on area.idarea=personal.idarea left outer join personal_orga on personal_orga.id=personal.idcargo $filtro order by area.orden,personal_orga.orden,personal.idpersona";
+				$sql="SELECT personal.idpersona,nombre,personal.idarea,area.area,personal.estudio,personal_orga.orden, personal_orga.cargo, personal.file_foto FROM personal left outer join area on area.idarea=personal.idarea left outer join personal_orga on personal_orga.id=personal.idcargo $filtro order by area.orden,personal_orga.orden,personal.idpersona";
 			}
 			else{
-				$sql="SELECT personal.idpersona,nombre,personal.idarea,area.titulo,area.area,personal.estudio,personal_orga.cargo, personal.file_foto FROM personal left outer join area on area.idarea=personal.idarea left outer join personal_orga on personal_orga.id=personal.idcargo where personal.idpersona='".$_SESSION['idpersona']."' order by area.orden,personal_orga.orden,personal.idpersona";
+				$sql="SELECT personal.idpersona,nombre,personal.idarea,area.area,personal.estudio,personal_orga.cargo, personal.file_foto FROM personal left outer join area on area.idarea=personal.idarea left outer join personal_orga on personal_orga.id=personal.idcargo where personal.idpersona='".$_SESSION['idpersona']."' order by area.orden,personal_orga.orden,personal.idpersona";
 			}
-
 			foreach ($this->dbh->query($sql) as $res){
 				$this->accesox[]=$res;
 			}
@@ -65,14 +64,7 @@ class Personal extends Salud{
 			return "Database access FAILED! ".$e->getMessage();
 		}
 	}
-	public function personas_total(){
-		$sql="select count(idpersona) as total from personal where idarea<100 ";
-		foreach ($this->dbh->query($sql) as $res){
-            $this->accesox=$res;
-        }
-        return $this->accesox;
-        $this->dbh=null;
-	}
+
 	public function puesto(){
 		$sql="select * from personal_puesto order by puesto asc";
 		foreach ($this->dbh->query($sql) as $res){
@@ -109,92 +101,6 @@ class Personal extends Salud{
         $this->dbh=null;
 
 	}
-	public function plaza(){
-		$sql="select idplaza,plaza from plaza";
-		foreach ($this->dbh->query($sql) as $res){
-            $this->plazax[]=$res;
-        }
-        return $this->plazax;
-        $this->dbh=null;
-	}
-	public function programa(){
-		$sql="select idprogra,programa from personal_programa";
-		foreach ($this->dbh->query($sql) as $res){
-            $this->programax[]=$res;
-        }
-        return $this->programax;
-        $this->dbh=null;
-	}
-	public function profesion(){
-		$sql="select * from personal_profesion order by profesion";
-		foreach ($this->dbh->query($sql) as $res){
-            $this->profesionx[]=$res;
-        }
-        return $this->profesionx;
-        $this->dbh=null;
-	}
-	public function escolaridad(){
-		$sql="select * from personal_escolaridad order by escolaridad";
-		foreach ($this->dbh->query($sql) as $res){
-            $this->escolaridadx[]=$res;
-        }
-        return $this->escolaridadx;
-        $this->dbh=null;
-	}
-	public function personal_acredita(){
-		try{
-			parent::set_names();
-			$this->personal_cre=array();
-			$sql="select * from personal_acredita order by acredita";
-			foreach ($this->dbh->query($sql) as $res){
-				$this->personal_cre[]=$res;
-			}
-			return $this->personal_cre;
-			$this->dbh=null;
-		}
-		catch(PDOException $e){
-			return "Database access FAILED!".$e->getMessage();
-		}
-	}
-	public function personal_especialidad(){
-		$sql="select * from personal_especialidad order by especialidad";
-		foreach ($this->dbh->query($sql) as $res){
-            $this->personal_esp[]=$res;
-        }
-        return $this->personal_esp;
-        $this->dbh=null;
-	}
-	public function personal_funcion(){
-		try{
-			parent::set_names();
-			$this->personal_func=array();
-			$sql="select * from personal_funcion order by funcion";
-			foreach ($this->dbh->query($sql) as $res){
-				$this->personal_func[]=$res;
-			}
-			return $this->personal_func;
-			$this->dbh=null;
-		}
-		catch(PDOException $e){
-			return "Database access FAILED!".$e->getMessage();
-		}
-	}
-	public function personal_doc($id){
-		try{
-			parent::set_names();
-			$this->personal_func=array();
-			$sql="select * from personal_docu where idpersona='$id'";
-			$this->personal_docu=array();
-			foreach ($this->dbh->query($sql) as $res){
-				$this->personal_docu[]=$res;
-			}
-			return $this->personal_docu;
-			$this->dbh=null;
-		}
-		catch(PDOException $e){
-			return "Database access FAILED!".$e->getMessage();
-		}
-	}
 	public function superior($id){
 			try{
 				parent::set_names();
@@ -228,7 +134,7 @@ class Personal extends Salud{
 		try{
 				self::set_names();
 
-				$sql="SELECT nombre,usuario,pass,nick,estudio,idpersona,file_foto,personal.idarea,idcargo,personal_orga.cargo,personal_orga.parentid,personal_orga.orden as puesto,idfondo FROM personal left outer join personal_orga on personal_orga.id=personal.idcargo where idpersona='$id'";
+				$sql="SELECT nombre,usuario,pass,estudio,idpersona,file_foto,personal.idarea,idcargo,personal_orga.cargo,personal_orga.parentid,personal_orga.orden as puesto,idfondo FROM personal left outer join personal_orga on personal_orga.id=personal.idcargo where idpersona='$id'";
 				foreach ($this->dbh->query($sql) as $res){
 					$this->accesox=$res;
 				}
@@ -250,9 +156,6 @@ class Personal extends Salud{
 		if (isset($_REQUEST['rfc'])){
 			$arreglo+=array('rfc'=>$_REQUEST['rfc']);
 		}
-		if (isset($_REQUEST['curp'])){
-			$arreglo+=array('curp'=>$_REQUEST['curp']);
-		}
 		if (isset($_REQUEST['prof'])){
 			$arreglo+=array('estudio'=>$_REQUEST['prof']);
 		}
@@ -266,138 +169,23 @@ class Personal extends Salud{
 		else{
 			$arreglo+=array('idcargo'=>NULL);
 		}
-
 		if (isset($_REQUEST['idpuesto'])){
 			$arreglo+=array('idpuesto'=>$_REQUEST['idpuesto']);
-		}
-		if (isset($_REQUEST['presupuestal'])){
-			$arreglo+=array('clave'=>$_REQUEST['presupuestal']);
-		}
-		if (isset($_REQUEST['codigo'])){
-			$arreglo+=array('codigo'=>$_REQUEST['codigo']);
-		}
-		if (isset($_REQUEST['fingreso'])){
-			$fx=explode("-",$_REQUEST['fingreso']);
-			$arreglo+=array('fingreso'=>$fx['2']."-".$fx['1']."-".$fx['0']);
 		}
 		if (isset($_REQUEST['nombra'])){
 			$arreglo+=array('nombra'=>$_REQUEST['nombra']);
 		}
-		if (isset($_REQUEST['idplaza'])){
-			$arreglo+=array('idplaza'=>$_REQUEST['idplaza']);
-		}
 		if (isset($_REQUEST['idprograma'])){
 			$arreglo+=array('idprogra'=>$_REQUEST['idprograma']);
 		}
-		if (isset($_REQUEST['cat'])){
-			$arreglo+=array('categoria'=>$_REQUEST['cat']);
-		}
-		if (isset($_REQUEST['cat1'])){
-			$arreglo+=array('categorian'=>$_REQUEST['cat1']);
-		}
-		if (isset($_REQUEST['credencial'])){
-			$arreglo+=array('credencial'=>$_REQUEST['credencial']);
-		}
-		if (isset($_REQUEST['concepto'])){
-			$arreglo+=array('concepto07'=>$_REQUEST['concepto']);
-		}
-		if (isset($_REQUEST['sueldo'])){
-			$arreglo+=array('sueldo'=>$_REQUEST['sueldo']);
-		}
-		if (isset($_REQUEST['compensacion'])){
-			$arreglo+=array('compensacion'=>$_REQUEST['compensacion']);
-		}
-		if (isset($_REQUEST['horario'])){
-			$arreglo+=array('horario'=>$_REQUEST['horario']);
-		}
-		if (isset($_REQUEST['lunes'])){
-			$arreglo+=array('lunes'=>$_REQUEST['lunes']);
-		}
-		if (isset($_REQUEST['martes'])){
-			$arreglo+=array('martes'=>$_REQUEST['martes']);
-		}
-		if (isset($_REQUEST['miercoles'])){
-			$arreglo+=array('miercoles'=>$_REQUEST['miercoles']);
-		}
-		if (isset($_REQUEST['jueves'])){
-			$arreglo+=array('jueves'=>$_REQUEST['jueves']);
-		}
-		if (isset($_REQUEST['viernes'])){
-			$arreglo+=array('viernes'=>$_REQUEST['viernes']);
-		}
-		if (isset($_REQUEST['sabado'])){
-			$arreglo+=array('sabado'=>$_REQUEST['sabado']);
-		}
-		if (isset($_REQUEST['idprofesion'])){
-			$arreglo+=array('idprofesion'=>$_REQUEST['idprofesion']);
-		}
-		if (isset($_REQUEST['idescolaridad'])){
-			$arreglo+=array('idescolaridad'=>$_REQUEST['idescolaridad']);
-		}
-		if (isset($_REQUEST['idacredita'])){
-			$arreglo+=array('idacredita'=>$_REQUEST['idacredita']);
-		}
-		if (isset($_REQUEST['idespecialidad'])){
-			$arreglo+=array('idespecialidad'=>$_REQUEST['idespecialidad']);
-		}
-		if (isset($_REQUEST['cedula'])){
-			$arreglo+=array('cedula'=>$_REQUEST['cedula']);
-		}
+
 		if (isset($_REQUEST['idfuncion'])){
 			$arreglo+=array('idfuncion'=>$_REQUEST['idfuncion']);
 		}
-		if (isset($_REQUEST['calle'])){
-			$arreglo+=array('calle'=>$_REQUEST['calle']);
-		}
-		if (isset($_REQUEST['num'])){
-			$arreglo+=array('numero'=>$_REQUEST['num']);
-		}
-		if (isset($_REQUEST['colonia'])){
-			$arreglo+=array('colonia'=>$_REQUEST['colonia']);
-		}
-		if (isset($_REQUEST['cpostal'])){
-			$arreglo+=array('cpostal'=>$_REQUEST['cpostal']);
-		}
-		if (isset($_REQUEST['estado'])){
-			$arreglo+=array('estado'=>$_REQUEST['estado']);
-		}
-		if (isset($_REQUEST['municipio'])){
-			$arreglo+=array('municipio'=>$_REQUEST['municipio']);
-		}
-		if (isset($_REQUEST['telefono'])){
-			$arreglo+=array('telefono'=>$_REQUEST['telefono']);
-		}
-		if (isset($_REQUEST['telcel'])){
-			$arreglo+=array('telcel'=>$_REQUEST['telcel']);
-		}
-		if (isset($_REQUEST['directorio'])){
-			$arreglo+=array('directorio'=>$_REQUEST['directorio']);
-		}
-		if (isset($_REQUEST['sangre'])){
-			$arreglo+=array('grupo_sanguineo'=>$_REQUEST['sangre']);
-		}
-		if (isset($_REQUEST['mama'])){
-			$arreglo+=array('mama'=>$_REQUEST['mama']);
-		}
-		if (isset($_REQUEST['papa'])){
-			$arreglo+=array('papa'=>$_REQUEST['papa']);
-		}
-		if (isset($_REQUEST['hijos'])){
-			$arreglo+=array('hijos'=>$_REQUEST['hijos']);
-		}
-		if (isset($_REQUEST['fecha_hijo']) and strlen($_REQUEST['fecha_hijo'])>0){
-			$fx=explode("-",$_REQUEST['fecha_hijo']);
-			$arreglo+=array('fecha_hijo'=>$fx['2']."-".$fx['1']."-".$fx['0']);
-		}
-		else{
-			$arreglo+=array('fecha_hijo'=>NULL);
-		}
+
 		if (isset($_REQUEST['correo'])){
 			$correo=trim($_REQUEST['correo']);
 			$arreglo+=array('correo'=>$correo);
-		}
-		if (isset($_REQUEST['correoinstitucional'])){
-			$arreglo+=array('correoinstitucional'=>$_REQUEST['correoinstitucional']);
 		}
 		if (isset($_REQUEST['usuariot'])){
 			$arreglo+=array('usuario'=>$_REQUEST['usuariot']);
@@ -423,8 +211,6 @@ class Personal extends Salud{
 			}
 		}
 		else{
-			$arreglo+=array('fecha'=>date("Y-m-d"));
-
 			if($_SESSION['administrador']==1){
 				if (isset($_REQUEST['autoriza'])){
 					$arreglo+=array('autoriza'=>$_REQUEST['autoriza']);
@@ -542,8 +328,6 @@ class Personal extends Salud{
 		$superior = $this->superior($CLAVE['parentid']);
 		$_SESSION['superior']=$superior['idpersona'];
 
-
-		$_SESSION['nick']=$CLAVE['nick'];
 		$_SESSION['estudio']=$CLAVE['estudio'];
 		$_SESSION['idpersona']=$CLAVE['idpersona'];
 		$_SESSION['idarea']=$CLAVE['idarea'];
@@ -608,19 +392,6 @@ class Personal extends Salud{
 		$x=$this->update('personal',array('idpersona'=>$id), $arreglo);
 		return "$x";
 	}
-	public function validar(){
-		$arreglo =array();
-		if (isset($_REQUEST['idareap'])){$idareap=$_REQUEST['idareap'];}
-		try{
-			foreach($idareap as $v2){
-				$this->update('personal',array('idarea'=>$v2),array('fecha'=>date("Y-m-d")));
-			}
-		}
-		catch(PDOException $e){
-			return "Database access FAILED!".$e->getMessage();
-		}
-		return "Se valido correctamente";
-	}
 	public function guardar_documento(){
 		$arreglo =array();
 		$arreglo+=array('idpersonal'=>$_REQUEST['id']);
@@ -641,28 +412,8 @@ class Personal extends Salud{
 		$x.= "<option value='' selected></option>";
 		$x.= "<optgroup label='SUBSECRETARIA'>";
 		$x.= "<option value='PERSONAL'>PERSONAL</option>";
-		$x.= "<option value='DOCUMENTOS'>DOCUMENTOS</option>";
 		$x.= "<option value='CORRESPONDENCIA'>CORRESPONDENCIA</option>";
 		$x.= "<option value='CORRESPREGISTRO'>CORRESP REGISTRO</option>";
-		$x.= "<option value='COMITES'>COMITES</option>";
-		$x.= "<option value='ORGANIGRAMA'>ORGANIGRAMA</option>";
-
-		$x.= "<optgroup label='ADMINISTRACIÓN'>";
-		$x.= "<option value='CHEQUES'>CHEQUES</option>";
-		$x.= "<option value='PRESUPUESTO'>PRESUPUESTO</option>";
-		$x.= "<option value='PRESUPUESTO2'>PRESUPUESTO2</option>";
-		$x.= "<option value='INVENTARIO'>INVENTARIO</option>";
-		$x.= "<option value='PAPELERIA'>PAPELERIA</option>";
-		$x.= "<option value='SALIDAS'>SALIDAS</option>";
-
-		$x.= "<optgroup label='HERRAMIENTAS'>";
-		$x.= "<option value='CURSO'>CURSO</option>";
-		$x.= "<option value='MAPAS'>MAPAS</option>";
-		$x.= "<option value='ENCUESTA'>ENCUESTA</option>";
-
-		$x.= "<optgroup label='OTROS'>";
-		$x.= "<option value='DIRECTORIO'>DIRECTORIO</option>";
-
 		return $x;
 	}
 	public function nivelx($val){

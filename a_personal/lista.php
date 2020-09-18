@@ -47,9 +47,3 @@
 			</table>
 		</div>
 	</div>
-
-<script>
-	$(document).ready( function () {
-		lista("x_lista");
-	});
-</script>
